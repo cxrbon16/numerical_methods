@@ -234,15 +234,25 @@ char* eval_postfix(char** postfix){
 			sprintf(to_push, "%f", val);
 			push(number_stack, to_push);
 		}
-		else if (strcmp(postfix[i], "log") == 0){
+		else if (strcmp(postfix[i], "arcsin") == 0){
 			params[0] = strtod(pop(number_stack), &eptr);
-			params[1] = strtod(pop(number_stack), &eptr);
-			val = log(params[0]) / log(params[1]);
+			val = asin(params[0]);
+			sprintf(to_push, "%f", val);
+			push(number_stack, to_push);
+		}
+		else if(strcmp(postfix[i], "arccos")){
+			params[0] = strtod(pop(number_stack), &eptr);
+			val = acos(params[0]);
+			sprintf(to_push, "%f", val);
+			push(number_stack, to_push);
+		}
+		else if(strcmp(postfix[i], "arctan")){
+			params[0] = strtod(pop(number_stack), &eptr);
+			val = atan(params[0]);
 			sprintf(to_push, "%f", val);
 			push(number_stack, to_push);
 		}
 		
-			
 	}
 	else{
 	     push(number_stack, postfix[i]);
@@ -252,17 +262,32 @@ char* eval_postfix(char** postfix){
     
     
     return pop(number_stack);
-	
+		
+}
 
-	
+char** replace(char** expression, char* x){ //replaces constants like e and variables like x and y. apply on the postfix expression.
+	int i = 0, n;
+	char* evaluated_x = eval_postfix(infix_to_postfix(x));
+
+	while(expression[i] != NULL){
+		if(expression[i][0] == 'e'){
+			expression[i] = "2.71828182";
+		}else if(expression[i][0] == 'x'){
+			sprintf(expression[i], "%s", evaluated_x);
+		}
+		i++;
+	}
 }
 
 int main()
 {
     char** postfix;
     char direct_input[100];
+    char* x;
     fgets(direct_input, 100, stdin);
+    fgets(x, 100, stdin);
     postfix = infix_to_postfix(direct_input); 
+    postfix = replace(postfix, x);
     printf("\n%s", eval_postfix(postfix));
     char* s;
     scanf("%s", s);
